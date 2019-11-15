@@ -16,7 +16,7 @@ public interface ERSReimbursementDao {
 	
 	List<ERSReimbursement> findByERSReimbursementType(int ersType);
 	
-	List<ERSReimbursement> findByERSRole(String ersRole);
+	List<ERSReimbursement> findByERSUserRole(int ersUserRole);
 	
 	ERSReimbursement findByERSId(int reimId);
 	

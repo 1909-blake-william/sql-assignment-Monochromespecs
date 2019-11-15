@@ -135,9 +135,27 @@ public class ERSReimbursementDaoSQL implements ERSReimbursementDao {
 	}
 
 	@Override
-	public List<ERSReimbursement> findByERSRole(String ersRole) {
-		
-		return null;
+	public List<ERSReimbursement> findByERSUserRole(int ersUserRole) {
+		log.debug("Attempting to find ERS reimbursements by role...");
+		try(Connection con = ConnectionUtil.getConnection()){
+			
+			String sql = "SELECT * FROM ERS_REIMBURSEMENT ersr " 
+			+ "LEFT JOIN ERS_USER_ROLES ersur ON (ersr.reimb_author = ersur.user_role_id) "
+			+ "LEFT JOIN ERS_USERS_ID ersu ON (ersr.ers_reimb_id = ersu.ers_users_id) " + "WHERE reimb_author = ?";
+			
+			PreparedStatement ps = con.prepareStatement(sql);
+			ps.setInt(1, ersUserRole);
+			List<ERSReimbursement> temp = new ArrayList<>();
+			ResultSet rs = ps.executeQuery();
+			while (rs.next()) {
+				temp.add(extractERSReimbursement(rs));				
+			}
+			return temp;
+			
+		} catch (Exception e) {
+			e.printStackTrace();
+			return null;
+		}
 	}
 
 	@Override
